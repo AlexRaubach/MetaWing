@@ -28,7 +28,7 @@
           - if ship_configuration.pilot.present?
             %strong
               = link_with_filter_to pilot_path(ship_configuration.pilot.id), class: 'link-with-hover-image' do
-                = image_tag "pilots/#{ship_configuration.pilot.xws}.png"
+                = image_tag "https://infinitearenas.com/xw2/images/pilots/#{ship_configuration.pilot.xws}.png"
                 = ship_configuration.pilot.name
             %small
               = link_with_filter_to ship_path(ship_configuration.pilot.ship.id) do
