@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '~> 3.0.2'
+ruby '~> 3.1.3'
 
 # core
 
@@ -23,6 +23,11 @@ gem 'exception_notification'
 gem 'jbuilder'
 gem 'jquery-rails'
 # gem 'webpacker'
+
+# Add some gems so rails 6 runs on 3.1.3
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
 
 # additional libs
 
