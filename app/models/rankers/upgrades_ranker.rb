@@ -36,6 +36,7 @@ module Rankers
         tournaments:                  'count(distinct tournaments.id)',
         average_percentile:           weight_query_builder.build_average_query,
         average_wlr:                  weight_query_builder.build_win_loss_query,
+        image:                        'max(upgrade_sides.image)'
       }
       upgrade_relation     = Upgrade
                                .joins(joins)

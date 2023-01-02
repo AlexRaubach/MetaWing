@@ -16,7 +16,7 @@
         %strong= "#{index + 1}."
       %td.image-hover-cell.upgrade
         .image-with-hover
-          = image_tag "upgrades/#{upgrade.xws}.png", alt: "#{upgrade.name}", loading: "lazy"
+          = image_tag upgrade.image, alt: "#{upgrade.name}", loading: "lazy" unless upgrade.image.blank?
       %td
         = link_with_filter_to upgrade_path(upgrade.id) do
           = upgrade.name

@@ -36,7 +36,7 @@
               - ship_configuration.upgrades.each do |upgrade|
                 %i.xwing-miniatures-font{class: "xwing-miniatures-font-#{upgrade_type_icon(upgrade.upgrade_sides[0].upgrade_type)}"}
                 = link_with_filter_to upgrade_path(upgrade.id), class: 'link-with-hover-image' do
-                  = image_tag "upgrades/#{upgrade.xws}.png", alt: "#{upgrade.name}"
+                  = image_tag upgrade&.upgrade_sides&.first&.image, alt: "#{upgrade.name}" unless upgrade&.upgrade_sides&.first&.image.blank?
                   = upgrade.name
           - else
             = t('.missing_pilot')
@@ -44,7 +44,7 @@
               - ship_configuration.upgrades.each do |upgrade|
                 %i.xwing-miniatures-font{class: "xwing-miniatures-font-#{upgrade_type_icon(upgrade.upgrade_sides[0].upgrade_type)}"}
                 = link_with_filter_to upgrade_path(upgrade.id), class: 'link-with-hover-image' do
-                  = image_tag "upgrades/#{upgrade.xws}.png", alt: "#{upgrade.name}"
+                  = image_tag upgrade&.upgrade_sides&.first&.image, alt: "#{upgrade.name}" unless upgrade&.upgrade_sides&.first&.image.blank?
                   = upgrade.name
           %br
         %small
