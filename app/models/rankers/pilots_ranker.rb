@@ -35,6 +35,7 @@ module Rankers
         tournaments:          'count(distinct tournaments.id)',
         average_percentile:   weight_query_builder.build_average_query,
         average_wlr:          weight_query_builder.build_win_loss_query,
+        image:                'pilots.image'
       }
       pilot_relation       = Pilot
                                .joins(joins)

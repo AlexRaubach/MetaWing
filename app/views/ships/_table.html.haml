@@ -29,7 +29,7 @@
             %small
               %i.xwing-miniatures-font{class: "xwing-miniatures-font-#{faction_icon(pilot.faction.name)}"}
             = link_with_filter_to pilot_path(pilot.id), class: 'link-with-hover-image' do
-              = image_tag "https://infinitearenas.com/xw2/images/pilots/#{pilot.xws}.png", alt: "#{pilot.name}", loading: "lazy"
+              = image_tag pilot.image, alt: "#{pilot.name}", loading: "lazy" unless pilot.image.blank?
               = pilot.name
             - if index < pilots.count - 1
               = ' - '
