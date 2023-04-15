@@ -72,9 +72,11 @@ module Importers
       def find_with_type(key)
         model = UpgradeSide.where("LOWER(upgrade_type) = ?", key.downcase)
         return model if model.present?
+
         key = normalize_upgrade_type_key(key)
         model = UpgradeSide.where("LOWER(upgrade_type) = ?", key.downcase)
         return model if model.present?
+
         p "ERROR => UpgradeSide not found for #{key} <="
       end
 
@@ -87,6 +89,10 @@ module Importers
         return model if model.present?
         puts "-> looking again for #{relation.name} #{key} - #{Faction.where(xws: faction_xws).try(:id).inspect} <-"
         {
+          'kickback-sigeofcoruscant' => 'kickback-siegeofcoruscant',
+          'dt798-tiefofighter' => 'dt798',
+          'hondoohnaka-firesprayclasspatrolcraft' => 'hondoohnaka',
+          'maulermither-battleofyavin' => 'maulermithel-battleofyavin',
           'upsilonclasscommandshuttle' => 'upsilonclassshuttle',
           'tieinterceptor' => 'tieininterceptor',
           'adv' => 'advanced',

@@ -4,7 +4,6 @@ require 'json'
 
 module Importers
   class ListsJuggler
-
     class InvalidTournament < StandardError
     end
 
@@ -13,9 +12,9 @@ module Importers
       if latest_update.present?
         latest_update = Time.iso8601(latest_update)
       end
-      tournaments = get_tournaments(latest_update,use_updated)
+      tournaments = get_tournaments(latest_update, use_updated)
       if tournaments.present?
-        tournaments = tournaments.sort_by { |hash| hash['id'].to_i || 0}
+        tournaments = tournaments.sort_by { |hash| hash['id'].to_i || 0 }
         tournaments.each do |t|
           if minimum_id.nil? || t['id']>= minimum_id
             puts "[#{t['id']}]"
@@ -30,13 +29,13 @@ module Importers
         end
       end
       if latest_update.present?
-        KeyValueStoreRecord.set!('latest_tourney_update',latest_update.in_time_zone('UTC').iso8601)
+        KeyValueStoreRecord.set!('latest_tourney_update', latest_update.in_time_zone('UTC').iso8601)
       end
     end
 
     def sync_tournament(tournament)
       baseuri = Rails.configuration.x.listfortress.uri
-      uri      = URI.parse(baseuri+"/tournaments/#{tournament.lists_juggler_id}")
+      uri      = URI.parse(baseuri + "/tournaments/#{tournament.lists_juggler_id}")
       response = Net::HTTP.get_response(uri)
       #req = Net::HTTP::Get.new(uri.path, 'Accept' => 'application/json')
       #response = Net::HTTP.new(uri.host, uri.port).request(req)
@@ -137,7 +136,7 @@ module Importers
                     round_type:       round_type,
                   })
                 rescue => e
-                  puts "Game Error: " + e.message
+                  puts "Game Error: #{e.message}"
                 end
               elsif game_data['player2_points'].to_i > game_data['player1_points'].to_i
                 if squadron_container[game_data['player1_id']].present? && squadron_container[game_data['player2_id']].present?
@@ -150,7 +149,7 @@ module Importers
                       round_type:       round_type,
                     })
                   rescue => e
-                    puts "Game Error: " + e.message
+                    puts "Game Error: #{e.message}"
                   end
                 end
               end
@@ -161,104 +160,105 @@ module Importers
     end
 
     def sync_squadron(tournament, squadron_data)
-      if squadron_data['list_json'].present? 
-        squadron    = SquadronFromXws.build_squadron(squadron_data['list_json'])
-        #faction_xws = squadron_data['list_json']['faction']
-        #p faction_xws
-        #faction     = Faction.find_by(xws: faction_xws)
-        #p faction.id
-        squadron.assign_attributes({
-                                     tournament:           tournament,
-                                     player_name:          squadron_data['name'],
-                                     xws:                  squadron_data['list_json'],
-                                     mov:                  squadron_data['mov'],
-                                     points:               squadron_data['score'],
-                                     elimination_standing: squadron_data['top_cut_rank'],
-                                     swiss_standing:       squadron_data['swiss_rank'],
-                                     faction_id:           squadron.faction_id,
-                                   })
-        squadron.save!
-        squadron
+      return unless squadron_data['list_json'].present?
+
+      begin
+      squadron = SquadronFromXws.build_squadron(squadron_data['list_json'])
+      squadron.assign_attributes({
+                                    tournament:           tournament,
+                                    player_name:          squadron_data['name'],
+                                    xws:                  squadron_data['list_json'],
+                                    mov:                  squadron_data['mov'],
+                                    points:               squadron_data['score'],
+                                    elimination_standing: squadron_data['top_cut_rank'],
+                                    swiss_standing:       squadron_data['swiss_rank'],
+                                    faction_id:           squadron.faction_id,
+                                  })
+      squadron.save!
+      squadron
+      rescue => e
+        puts "Game Error: #{e.message}"
+        nil
       end
     end
 
     private
-      def get_tournaments(latest_update,use_updated)
-        baseuri = Rails.configuration.x.listfortress.uri
-        uri = nil
-        if latest_update.present? && use_updated==true
-          uri         = URI.parse(baseuri + '/tournaments?updatedafter='+latest_update.in_time_zone('UTC').iso8601)
-        else
-          uri         = URI.parse(baseuri + '/tournaments')
-        end
-        response = Net::HTTP.get_response(uri)
-        #req = Net::HTTP::Get.new(uri.to_s, {'Accept' => 'application/json'})
-        #response = Net::HTTP.new(uri.host, uri.port).request(req)
-        case response
-          when Net::HTTPRedirection then
-            location = response['location']
-            warn "redirected to #{location}"
-            response = handle_redirect(location)
-        end
-        cleaned = encode(response.body)
-        tournaments = ExecJS.eval(cleaned)
-        return tournaments
+
+    def get_tournaments(latest_update,use_updated)
+      baseuri = Rails.configuration.x.listfortress.uri
+      uri = nil
+      if latest_update.present? && use_updated==true
+        uri         = URI.parse(baseuri + '/tournaments?updatedafter='+latest_update.in_time_zone('UTC').iso8601)
+      else
+        uri         = URI.parse(baseuri + '/tournaments')
       end
-
-      def handle_redirect(uri_str, limit=10)
-        raise ArgumentError, 'too many HTTP redirects' if limit == 0
-
-        response = Net::HTTP.get_response(URI(uri_str))
-
-        case response
-        when Net::HTTPSuccess then
-          response
+      response = Net::HTTP.get_response(uri)
+      # req = Net::HTTP::Get.new(uri.to_s, {'Accept' => 'application/json'})
+      # response = Net::HTTP.new(uri.host, uri.port).request(req)
+      case response
         when Net::HTTPRedirection then
           location = response['location']
           warn "redirected to #{location}"
-          fetch(location, limit - 1)
-        else
-          response.value
-        end
+          response = handle_redirect(location)
       end
+      cleaned = encode(response.body)
+      ExecJS.eval(cleaned)
+    end
 
-      def encode str
-        encoded = str.force_encoding('UTF-8')
-        unless encoded.valid_encoding?
-          encoded = str.encode("utf-8", invalid: :replace, undef: :replace, replace: '?')
-        end
-        encoded
+    def handle_redirect(uri_str, limit=10)
+      raise ArgumentError, 'too many HTTP redirects' if limit == 0
+
+      response = Net::HTTP.get_response(URI(uri_str))
+
+      case response
+      when Net::HTTPSuccess then
+        response
+      when Net::HTTPRedirection then
+        location = response['location']
+        warn "redirected to #{location}"
+        fetch(location, limit - 1)
+      else
+        response.value
       end
+    end
 
-      def get_tournament_date(tournament)
-        baseuri = Rails.configuration.x.listfortress.uri
-        if tournament.nil?
-          begin
-            uri             = URI.parse(baseuri+"/tournament/#{tournament.lists_juggler_id}")
-            req = Net::HTTP::Get.new(uri.path, 'Content-Type' => 'application/json')
-            response = Net::HTTP.new(uri.host, uri.port).request(req)
-            tournament_data = JSON.parse(response.body)
-            Date.parse(tournament_data['date'])
-          rescue
-            nil
-          end
-        else
-          tournament.date
-        end
+    def encode str
+      encoded = str.force_encoding('UTF-8')
+      unless encoded.valid_encoding?
+        encoded = str.encode("utf-8", invalid: :replace, undef: :replace, replace: '?')
       end
+      encoded
+    end
 
-      def update_latest_update(latest_update,tournament)
-        if latest_update.nil? && tournament['updated_at'].present?
-          tupdate = Time.iso8601(tournament['updated_at'])
+    def get_tournament_date(tournament)
+      baseuri = Rails.configuration.x.listfortress.uri
+      if tournament.nil?
+        begin
+          uri = URI.parse(baseuri+"/tournament/#{tournament.lists_juggler_id}")
+          req = Net::HTTP::Get.new(uri.path, 'Content-Type' => 'application/json')
+          response = Net::HTTP.new(uri.host, uri.port).request(req)
+          tournament_data = JSON.parse(response.body)
+          Date.parse(tournament_data['date'])
+        rescue
+          nil
+        end
+      else
+        tournament.date
+      end
+    end
+
+    def update_latest_update(latest_update,tournament)
+      if latest_update.nil? && tournament['updated_at'].present?
+        tupdate = Time.iso8601(tournament['updated_at'])
+        latest_update = tupdate
+      end
+      if tournament.present? && tournament['id'].present?
+        tupdate = Time.iso8601(tournament['updated_at'])
+        if tupdate > latest_update
           latest_update = tupdate
         end
-        if tournament.present? && tournament['id'].present?
-          tupdate = Time.iso8601(tournament['updated_at'])
-          if tupdate > latest_update
-            latest_update = tupdate
-          end
-        end
-        return latest_update
       end
+      latest_update
+    end
   end
 end
