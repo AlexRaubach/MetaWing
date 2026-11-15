@@ -14,7 +14,6 @@ module Generators
         private
 
         def generate_pilot(context, pilot, position)
-          ship = Ship.find(pilot.ship_id)
           {
             position:           position,
             id:                 pilot.id,
@@ -23,9 +22,9 @@ module Generators
             link:               context.pilot_url(pilot.id, format: :json),
             image:              context.pilot_image_url(pilot.id, format: :png),
             ship:               {
-              id:   ship.id,
-              name: ship.name,
-              link: context.ship_url(ship.id, format: :json),
+              id:   pilot.ship_id,
+              name: pilot.ship_name,
+              link: context.ship_url(pilot.ship_id, format: :json),
             },
             squadron_count:     pilot.squadrons,
             tournaments_count:  pilot.tournaments,

@@ -18,7 +18,11 @@
     %meta{:content => "MetaWing", :name => "apple-mobile-web-app-title"}/
     %meta{:content => "MetaWing", :name => "application-name"}/
     %meta{:content => "#71b5ff", :name => "theme-color"}/
-    = javascript_include_tag 'application'
+    -# application.js is deferred, so inline scripts that call $(fn) before it has
+    -# loaded are queued here and replayed at the end of application.js
+    :javascript
+      window.$ = window.$ || function(fn) { (window.__readyQueue = window.__readyQueue || []).push(fn); };
+    = javascript_include_tag 'application', defer: true
     -# javascript_include_tag '//www.google.com/jsapi', 'chartkick'
 
   %body

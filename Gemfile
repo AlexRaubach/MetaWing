@@ -14,7 +14,7 @@ gem 'coffee-rails'
 gem 'font-awesome-rails'
 gem 'haml'
 gem 'sassc-rails'
-gem 'uglifier'
+gem 'terser'
 
 # core libs
 
@@ -42,10 +42,6 @@ gem 'oily_png'
 gem 'redcarpet'
 
 gem 'turbolinks'
-
-source 'https://rails-assets.org' do
-  gem 'rails-assets-tether', '>= 1.3.3'
-end
 
 # use scout for monitoring
 # gem 'scout_apm'

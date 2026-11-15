@@ -24,8 +24,13 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
-  # Compress CSS using a preprocessor.
-  # config.assets.css_compressor = :sass
+  # Fingerprinted assets never change, so let browsers cache them for a long time.
+  config.public_file_server.headers = { 'cache-control' => "public, max-age=#{1.year.to_i}" }
+
+  # Minify JS and CSS. Terser rather than Uglifier because the bundled libraries use
+  # modern syntax (e.g. optional chaining) that Uglifier cannot parse.
+  config.assets.js_compressor  = :terser
+  config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false

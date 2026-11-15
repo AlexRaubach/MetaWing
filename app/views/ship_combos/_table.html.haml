@@ -42,4 +42,4 @@
       -#    &mdash;
       - unless ship_combos.count <= 1
         %td.magic-column
-          = render '/shared/magic_bar', max_weight: ship_combos.first.weight, weight: ship_combo.weight
+          = magic_bar(ship_combo.weight, ship_combos.first.weight)

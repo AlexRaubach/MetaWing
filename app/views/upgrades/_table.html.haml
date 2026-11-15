@@ -40,4 +40,4 @@
       -#    &mdash;
       - unless upgrades.count <= 1
         %td.magic-column
-          = render '/shared/magic_bar', max_weight: upgrades.first.weight, weight: upgrade.weight
+          = magic_bar(upgrade.weight, upgrades.first.weight)

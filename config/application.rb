@@ -16,6 +16,9 @@ module ListJuggleBrowser
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
+    # Gzip responses; the ranking tables are several hundred KB of repetitive HTML
+    config.middleware.insert_before 0, Rack::Deflater
+
     config.time_zone = "Eastern Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]

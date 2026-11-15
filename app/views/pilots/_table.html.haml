@@ -44,4 +44,4 @@
       -#    &mdash;
       - unless pilots.count <= 1
         %td.magic-column
-          = render '/shared/magic_bar', max_weight: pilots.first.weight, weight: pilot.weight
+          = magic_bar(pilot.weight, pilots.first.weight)

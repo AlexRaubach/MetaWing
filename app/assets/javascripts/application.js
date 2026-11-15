@@ -12,8 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require tether
 //= require bootstrap-sprockets
 //= require turbolinks
 //= require_tree .
  
+
+// Run the inline $(fn) callbacks that were queued by the layout before this
+// deferred bundle (and jQuery) had loaded.
+(window.__readyQueue || []).forEach(function(fn) { jQuery(fn); });
+window.__readyQueue = [];
