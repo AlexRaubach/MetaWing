@@ -40,12 +40,12 @@ module Importers
           FileUtils.remove_dir(@dataroot, force = true)
         end
         puts 'Cloning the repository'
-        Git.clone(Importers::XwingData2::XWD2_GIT_URL, 'xwing-data2', path: (Rails.root + 'tmp'))
+        Git.clone(Importers::XwingData2::XWD2_GIT_URL, @dataroot.to_s)
       elsif !File.directory?(abs_path)
         puts 'Deleting xwing-data2 because it is a submodule'
         FileUtils.remove_dir(@dataroot, force = true)
         puts 'Cloning the repository to replace the submodule'
-        Git.clone(Importers::XwingData2::XWD2_GIT_URL, 'xwing-data2', path: (Rails.root + 'tmp'))
+        Git.clone(Importers::XwingData2::XWD2_GIT_URL, @dataroot.to_s)
       else
         puts 'Updating to the latest from the repository'
         g = Git.open(@dataroot)

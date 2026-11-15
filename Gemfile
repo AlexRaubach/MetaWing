@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
-ruby '~> 3.1.3'
+ruby '3.4.7'
 
 # core
 
 gem 'pg'
 gem 'puma'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 7.2'
 
 # views
 
@@ -22,12 +22,12 @@ gem 'devise'
 gem 'exception_notification'
 gem 'jbuilder'
 gem 'jquery-rails'
+# 3.x rejects the quirks_mode option ActiveSupport 7.2 passes to JSON.generate,
+# which breaks every to_json / render json: call
+gem 'json', '~> 2.19'
+# No longer loaded implicitly as of Ruby 3.4; used by the show controllers
+gem 'ostruct'
 # gem 'webpacker'
-
-# Add some gems so rails 6 runs on 3.1.3
-gem 'net-imap', require: false
-gem 'net-pop', require: false
-gem 'net-smtp', require: false
 
 # additional libs
 

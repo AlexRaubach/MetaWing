@@ -1,5 +1,5 @@
 class ShipCombo < ApplicationRecord
-  include Concerns::DirectQuery
+  include DirectQuery
 
   has_many :squadrons
 
