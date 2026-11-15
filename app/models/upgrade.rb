@@ -6,7 +6,7 @@ class Upgrade < ApplicationRecord
   has_and_belongs_to_many :ship_configurations
 
   has_many :conditions
-  has_many :upgrade_sides
+  has_many :upgrade_sides, -> { preferred_first }
 
   # TODO fix this (for two-sided cards)
   validates :xws, uniqueness: true

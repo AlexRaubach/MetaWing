@@ -9,8 +9,13 @@ module Rankers
       tournament_type = ranking_configuration[:tournament_type]
       game_format = ranking_configuration[:format_id]
       joins           = <<-SQL
-        inner join upgrade_sides
-          on upgrade_sides.upgrade_id = upgrades.id
+        inner join lateral (
+          select upgrade_sides.image, upgrade_sides.upgrade_type
+          from upgrade_sides
+          where upgrade_sides.upgrade_id = upgrades.id
+          order by #{UpgradeSide::PREFERRED_ORDER_SQL}
+          limit 1
+        ) upgrade_sides on true
         inner join ship_configurations_upgrades
           on ship_configurations_upgrades.upgrade_id = upgrades.id
         inner join ship_configurations

@@ -189,9 +189,12 @@ module Importers
         upgrade.cost = upgrade_cost['value'] if upgrade_cost.present?
         upgrade.hyperspace = upgrade_data['hyperspace']
 
-        upgrade_sides = upgrade_data['sides']
-        upgrade_sides.each do |side|
-          sync_upgrade_side_json(upgrade,side)
+        # xwing-data2 no longer provides an `ffg` id per side, so match sides by
+        # position among the sides synced without one. Legacy rows that still
+        # have an ffg id are left alone; readers prefer the ffg-less rows.
+        existing_sides = UpgradeSide.where(upgrade_id: upgrade.id, ffg: nil).order(:id).to_a
+        upgrade_data['sides'].each_with_index do |side, index|
+          sync_upgrade_side_json(upgrade, side, existing_sides[index])
         end
 
         # TODO Restrictions
@@ -199,8 +202,8 @@ module Importers
       end
     end
 
-    def sync_upgrade_side_json(upgrade,side)
-      upgrade_side = UpgradeSide.find_or_create_by(upgrade_id: upgrade.id, ffg: side['ffg'])
+    def sync_upgrade_side_json(upgrade, side, upgrade_side = nil)
+      upgrade_side ||= UpgradeSide.new(upgrade_id: upgrade.id)
       upgrade_side.title = side['title']
       upgrade_side.upgrade_type = side['type']
       upgrade_side.ability = side['ability']
