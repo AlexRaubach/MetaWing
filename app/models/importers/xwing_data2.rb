@@ -111,7 +111,7 @@ module Importers
       #TODO actions
 
       pilots = ship_hash['pilots']
-      faction_id = Faction.find_by(name:ship_hash['faction']).id
+      faction_id = (Faction.find_by(xws: ship_hash['faction']) || Faction.find_by(name: ship_hash['faction'])).id
 
       pilots.each do |pilot_hash|
         sync_pilot(pilot_hash,ship,faction_id)
