@@ -1,0 +1,9 @@
+{
+  "version": "9.9.9",
+  "factions": ["data/factions/factions.json"],
+  "pilots": [
+    { "faction": "rebelalliance", "ships": ["data/pilots/rebel-alliance/t-65-x-wing.json"] }
+  ],
+  "upgrades": ["data/upgrades/talent.json"],
+  "conditions": "data/conditions/conditions.json"
+}

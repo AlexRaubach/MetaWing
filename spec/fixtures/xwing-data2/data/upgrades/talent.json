@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Crack Shot",
+    "xws": "crackshot",
+    "limited": 0,
+    "cost": { "value": 1 },
+    "hyperspace": true,
+    "sides": [
+      {
+        "title": "Crack Shot",
+        "type": "Talent",
+        "ability": "While you perform a primary attack, you may spend 1 charge.",
+        "slots": ["Talent"],
+        "charges": { "value": 1, "recovers": 0 },
+        "image": "https://example.test/crackshot.png"
+      }
+    ]
+  }
+]

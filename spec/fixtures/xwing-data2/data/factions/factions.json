@@ -1,0 +1,4 @@
+[
+  { "name": "Rebel Alliance", "xws": "rebelalliance", "ffg": 1, "icon": "https://example.test/rebel.png" },
+  { "name": "Galactic Empire", "xws": "galacticempire", "ffg": 2, "icon": "https://example.test/empire.png" }
+]

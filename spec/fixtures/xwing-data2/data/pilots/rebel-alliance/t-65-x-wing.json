@@ -1,0 +1,33 @@
+{
+  "name": "T-65 X-wing",
+  "xws": "t65xwing",
+  "size": "Small",
+  "faction": "Rebel Alliance",
+  "icon": "https://example.test/xwing.png",
+  "pilots": [
+    {
+      "name": "Luke Skywalker",
+      "caption": "Red Five",
+      "initiative": 5,
+      "limited": 1,
+      "cost": 62,
+      "xws": "lukeskywalker",
+      "ability": "After you become the defender, you may recover 1 force.",
+      "force": { "value": 2, "recovers": 1, "side": ["light"] },
+      "image": "https://example.test/luke.png",
+      "artwork": "https://example.test/luke-art.png",
+      "slots": ["Force Power", "Torpedo", "Astromech"],
+      "hyperspace": true
+    },
+    {
+      "name": "Blue Squadron Escort",
+      "initiative": 2,
+      "limited": 0,
+      "cost": 41,
+      "xws": "bluesquadronescort",
+      "image": "https://example.test/blue.png",
+      "slots": ["Torpedo", "Astromech"],
+      "hyperspace": false
+    }
+  ]
+}
