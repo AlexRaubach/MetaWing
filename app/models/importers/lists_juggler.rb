@@ -124,36 +124,32 @@ module Importers
         round_number = round_data['round_number']
         round_type   = round_data['roundtype_id']
         round_data['matches'].each do |game_data|
-          if game_data['result'] == 'win'
-            if game_data['player1_points'].to_i > game_data['player2_points'].to_i
-              if squadron_container[game_data['player1_id']].present? && squadron_container[game_data['player2_id']].present?
-                begin
-                  Game.create!({
-                    tournament:       tournament,
-                    winning_squadron: squadron_container[game_data['player1_id']],
-                    losing_squadron:  squadron_container[game_data['player2_id']],
-                    round_number:     round_number,
-                    round_type:       round_type,
-                  })
-                rescue => e
-                  puts "Game Error: #{e.message}"
-                end
-              elsif game_data['player2_points'].to_i > game_data['player1_points'].to_i
-                if squadron_container[game_data['player1_id']].present? && squadron_container[game_data['player2_id']].present?
-                  begin
-                    Game.create!({
-                      tournament:       tournament,
-                      winning_squadron: squadron_container[game_data['player2_id']],
-                      losing_squadron:  squadron_container[game_data['player1_id']],
-                      round_number:     round_number,
-                      round_type:       round_type,
-                    })
-                  rescue => e
-                    puts "Game Error: #{e.message}"
-                  end
-                end
-              end
-            end
+          next unless game_data['result'] == 'win'
+
+          player1 = squadron_container[game_data['player1_id']]
+          player2 = squadron_container[game_data['player2_id']]
+          next unless player1.present? && player2.present?
+
+          player1_points = game_data['player1_points'].to_i
+          player2_points = game_data['player2_points'].to_i
+          if player1_points > player2_points
+            winner, loser = player1, player2
+          elsif player2_points > player1_points
+            winner, loser = player2, player1
+          else
+            next
+          end
+
+          begin
+            Game.create!({
+              tournament:       tournament,
+              winning_squadron: winner,
+              losing_squadron:  loser,
+              round_number:     round_number,
+              round_type:       round_type,
+            })
+          rescue => e
+            puts "Game Error: #{e.message}"
           end
         end
       end

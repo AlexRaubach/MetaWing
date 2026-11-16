@@ -19,7 +19,7 @@ module Generators
               context.t('ship_combos.csv.weight'),
             ]
             ship_combos.each_with_index do |ship_combo, index|
-              if ids.empty? || ids.map(&:to_i).include?(pilot.id)
+              if ids.empty? || ids.map(&:to_i).include?(ship_combo.id)
                 csv << [
                   index + 1,
                   ship_combo.archetype_name,
